@@ -84,12 +84,16 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="gksker's Blog">
-<meta property="og:url" content="https://gksker.github.io/index.html">
+<meta name="description" content="0x1 WMI简介　　WMI是一项核心的Windows管理技术，WMI作为一种规范和基础结构，通过它可以访问、配置、管理和监视几乎所有的Windows资源，比如用户可以在远程计算机器上启动一个进程；设定一个在特定日期和时间运行的进程；远程启动计算机；获得本地或远程计算机的已安装程序列表；查询本地或远程计算机的Windows事件日志等等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用WMI监视进程启动实现轻量级hook">
+<meta property="og:url" content="https://gksker.github.io/2016/11/01/利用WMI监视进程启动实现轻量级hook/index.html">
 <meta property="og:site_name" content="gksker's Blog">
+<meta property="og:description" content="0x1 WMI简介　　WMI是一项核心的Windows管理技术，WMI作为一种规范和基础结构，通过它可以访问、配置、管理和监视几乎所有的Windows资源，比如用户可以在远程计算机器上启动一个进程；设定一个在特定日期和时间运行的进程；远程启动计算机；获得本地或远程计算机的已安装程序列表；查询本地或远程计算机的Windows事件日志等等。">
+<meta property="og:updated_time" content="2016-11-01T06:06:00.451Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="gksker's Blog">
+<meta name="twitter:title" content="利用WMI监视进程启动实现轻量级hook">
+<meta name="twitter:description" content="0x1 WMI简介　　WMI是一项核心的Windows管理技术，WMI作为一种规范和基础结构，通过它可以访问、配置、管理和监视几乎所有的Windows资源，比如用户可以在远程计算机器上启动一个进程；设定一个在特定日期和时间运行的进程；远程启动计算机；获得本地或远程计算机的已安装程序列表；查询本地或远程计算机的Windows事件日志等等。">
 
 
 
@@ -110,10 +114,10 @@
 
 
 
-  <link rel="canonical" href="https://gksker.github.io/"/>
+  <link rel="canonical" href="https://gksker.github.io/2016/11/01/利用WMI监视进程启动实现轻量级hook/"/>
 
 
-  <title> gksker's Blog </title>
+  <title> 利用WMI监视进程启动实现轻量级hook | gksker's Blog </title>
 </head>
 
 <body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
@@ -144,9 +148,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left 
-   page-home 
- ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
@@ -238,9 +240,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
   
@@ -260,10 +262,7 @@
             
             
               
-                
-                <a class="post-title-link" href="/2016/11/01/利用WMI监视进程启动实现轻量级hook/" itemprop="url">
-                  利用WMI监视进程启动实现轻量级hook
-                </a>
+                利用WMI监视进程启动实现轻量级hook
               
             
           </h1>
@@ -338,284 +337,54 @@
       
 
       
-        
-          <h3 id="0x1-WMI简介"><a href="#0x1-WMI简介" class="headerlink" title="0x1 WMI简介"></a>0x1 WMI简介</h3><p>　　WMI是一项核心的Windows管理技术，WMI作为一种规范和基础结构，通过它可以访问、配置、管理和监视几乎所有的Windows资源，比如用户可以在远程计算机器上启动一个进程；设定一个在特定日期和时间运行的进程；远程启动计算机；获得本地或远程计算机的已安装程序列表；查询本地或远程计算机的Windows事件日志等等。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/11/01/利用WMI监视进程启动实现轻量级hook/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
+        <h3 id="0x1-WMI简介"><a href="#0x1-WMI简介" class="headerlink" title="0x1 WMI简介"></a>0x1 WMI简介</h3><p>　　WMI是一项核心的Windows管理技术，WMI作为一种规范和基础结构，通过它可以访问、配置、管理和监视几乎所有的Windows资源，比如用户可以在远程计算机器上启动一个进程；设定一个在特定日期和时间运行的进程；远程启动计算机；获得本地或远程计算机的已安装程序列表；查询本地或远程计算机的Windows事件日志等等。<br><a id="more"></a></p>
+<h3 id="0x2-VC中使用WMI的几个步骤"><a href="#0x2-VC中使用WMI的几个步骤" class="headerlink" title="0x2 VC中使用WMI的几个步骤"></a>0x2 VC中使用WMI的几个步骤</h3><p>1) 首先初始化COM库，并设置并发模式：CoInitializeEx(<a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms695279(v=vs.85).aspx" target="_blank" rel="external">https://msdn.microsoft.com/en-us/library/windows/desktop/ms695279(v=vs.85).aspx</a>);<br>　　<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">　　HRESULT hRet = CoInitializeEx(<span class="literal">NULL</span>, COINIT_MULTITHREADED);  </div><div class="line">　　</div><div class="line"><span class="keyword">if</span> (FAILED(hRet))  </div><div class="line">&#123;  </div><div class="line">	<span class="keyword">return</span> <span class="literal">NULL</span>;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>2) 创建IWbemLocator对象<br>　　IWbemLocator是一个指向WMI的命名空间的IWbemServices对象，利用这个对象的方法对WMI进行操作;<br>　　<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">　　IWbemLocator *pIWbemLocator = <span class="literal">NULL</span>;</div><div class="line">hRet = CoCreateInstance(CLSID_WbemLocator, <span class="literal">NULL</span>, CLSCTX_INPROC_SERVER, IID_IWbemLocator, (LPVOID*)&amp;pIWbemLocator);</div><div class="line"><span class="keyword">if</span> (FAILED(hRet))</div><div class="line">&#123;</div><div class="line">	CoUninitialize();</div><div class="line">	<span class="keyword">return</span> <span class="literal">NULL</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>3) 连接到指定计算机上的Windows管理器：<br>    <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">IWbemServices *pIWbemServices = <span class="literal">NULL</span>;</div><div class="line"><span class="keyword">bstr_t</span> strNetwoekResource(<span class="string">"ROOT\\CIMV2"</span>);</div><div class="line">hRet = pIWbemLocator-&gt;ConnectServer(strNetwoekResource, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;pIWbemServices);</div><div class="line"><span class="keyword">if</span> (FAILED(hRet))</div><div class="line">&#123;</div><div class="line">	pIWbemLocator-&gt;Release();</div><div class="line">	CoUninitialize();</div><div class="line">	<span class="keyword">return</span> <span class="literal">NULL</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>4) 为接口代理设置访问权限:<br>    <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">hRet = CoSetProxyBlanket(pIWbemServices, RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, <span class="literal">NULL</span>, RPC_C_AUTHN_LEVEL_CALL, RPC_C_IMP_LEVEL_IMPERSONATE, <span class="literal">NULL</span>, EOAC_NONE);</div><div class="line"><span class="keyword">if</span> (FAILED(hRet))</div><div class="line">&#123;</div><div class="line">	pIWbemServices-&gt;Release();</div><div class="line">	pIWbemLocator-&gt;Release();</div><div class="line">	CoUninitialize();</div><div class="line">	<span class="keyword">return</span> <span class="literal">NULL</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>5) 构建WQL语句<br>    WQL就是WMI中的查询语句，WQL为WMI Query Language的简写，其语法和SQL语句很相似。本文中为了监视进程创建，应指定一个进程名，当WMI监视到该进程名，便通知程序，本例假设监视notepad进程，构建WQL语句如下：<br>    <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">bstr_t</span> strQueryLanguage(<span class="string">"WQL"</span>);</div><div class="line"><span class="built_in">string</span> wql = <span class="string">"SELECT * FROM __InstanceCreationEvent WITHIN 1 WHERE TargetInstance ISA 'Win32_Process' AND (TargetInstance.Name = 'notepad.exe'"</span>;</div><div class="line"><span class="keyword">bstr_t</span> strQuery(wsql.c_str());</div><div class="line">IEnumWbemClassObject *pIEnumWbemClassObject = <span class="literal">NULL</span>;</div><div class="line">hRet = pIWbemServices-&gt;ExecNotificationQuery(strQueryLanguage, strQuery, WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, <span class="literal">NULL</span>, &amp;pIEnumWbemClassObject);</div></pre></td></tr></table></figure></p>
+<p>6)  开始监控<br>    <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">do</span></div><div class="line">	&#123;</div><div class="line">		....</div><div class="line">				hRet = pTargetInstance-&gt;Get(<span class="string">L"ProcessID"</span>, <span class="number">0</span>, &amp;vtProcessID, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</div><div class="line">				<span class="keyword">int</span> pid = vtProcessID.ulVal;</div><div class="line"></div><div class="line">			...</div><div class="line"></div><div class="line">	&#125; <span class="keyword">while</span> (TRUE);</div></pre></td></tr></table></figure></p>
+<h3 id="0x3-其中的小问题"><a href="#0x3-其中的小问题" class="headerlink" title="0x3 其中的小问题"></a>0x3 其中的小问题</h3><p>　　我们要实现hook，则必须在进程创建后kill掉该进程。到此便出现一个问题，如若该进程连带创建出一些同名子进程，程序的流程则不好控制。因为设计的流程是如果监视到该进程名创建，kill it，然后进行下一次检测。这样的话假若第一次kill的是子进程，那我们监视的进程则不会结束。<br>　　如果要达到我们的目的，则需要直接kill掉父进程，这样子进程也会因为父进程的死亡而死亡。<br>　　如何判断本次创建的进程是父进程呢，可以通过判断该进程的父进程是否为explorer.exe。  
+　　</p>
+<h3 id="0x4-获取进程的父进程PID"><a href="#0x4-获取进程的父进程PID" class="headerlink" title="0x4 获取进程的父进程PID"></a>0x4 获取进程的父进程PID</h3><p>　　有两种方法可以获取到进程的父进程PID：<br>　　一种通过用NtQueryInformationProcess获取PROCESS_BASIC_INFORMATION的结构体，其中有一个成员名为InheritedFromUniqueProcessId，便是查询进程的父进程PID；<br>　　另一种是通过查询进程快照，PROCESSENTRY32结构体中的成员变量th32ParentProcessID便为父进程PID。<br>　　<br>第一种方法代码如下：<br>　　<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">　　<span class="function"><span class="keyword">int</span> <span class="title">GetParentProcessID</span><span class="params">(DWORD dwId)</span>  </span></div><div class="line">&#123;  </div><div class="line">    LONG                      status;  </div><div class="line">    DWORD                     dwParentPID = <span class="number">0</span>;  </div><div class="line">    HANDLE                    hProcess;  </div><div class="line">    PROCESS_BASIC_INFORMATION pbi;  </div><div class="line">  </div><div class="line">    hProcess = OpenProcess(PROCESS_QUERY_INFORMATION,FALSE,dwId);  </div><div class="line">    <span class="keyword">if</span>(!hProcess)  </div><div class="line">        <span class="keyword">return</span> <span class="number">-1</span>;  </div><div class="line">  </div><div class="line">    status = NtQueryInformationProcess(hProcess,SystemBasicInformation,(PVOID)&amp;pbi,<span class="keyword">sizeof</span>(PROCESS_BASIC_INFORMATION),<span class="literal">NULL</span>);  </div><div class="line">    <span class="keyword">if</span>(!status)  </div><div class="line">        dwParentPID = pbi.InheritedFromUniqueProcessId;  </div><div class="line">  </div><div class="line">    CloseHandle (hProcess);  </div><div class="line">    <span class="keyword">return</span> dwParentPID;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>第二种方法代码如下：<br>    <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">    <span class="function">DWORD <span class="title">GetParentProcessID</span><span class="params">(DWORD dwId)</span></span></div><div class="line">&#123;</div><div class="line">	PROCESSENTRY32 pe32 = &#123; <span class="number">0</span> &#125;;</div><div class="line">	pe32.dwSize = <span class="keyword">sizeof</span>(pe32);</div><div class="line">	HANDLE hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, <span class="number">0</span>);</div><div class="line">	DWORD PID = <span class="number">0</span>;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (hSnapShot != <span class="number">0</span> &amp;&amp; hSnapShot != INVALID_HANDLE_VALUE)</div><div class="line">	&#123;</div><div class="line">		BOOL bRet = Process32First(hSnapShot, &amp;pe32);</div><div class="line">		<span class="keyword">while</span> (bRet)</div><div class="line">		&#123;</div><div class="line">			<span class="keyword">if</span> (pe32.th32ProcessID == dwId)</div><div class="line">			&#123;</div><div class="line">				PID = pe32.th32ParentProcessID;</div><div class="line">				<span class="keyword">break</span>;</div><div class="line">			&#125;</div><div class="line">			bRet = Process32Next(hSnapShot, &amp;pe32);</div><div class="line">		&#125;</div><div class="line">		CloseHandle(hSnapShot);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">return</span> PID;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　本文中的hook其实不是真正意义上的hook，实际上没有拦截创建进程创建，而是通过监视进程创建后，结束掉后再做我们的工作再创建进程。</p>
+
       
     </div>
 
     <div>
       
+        
+
+      
     </div>
 
     <div>
       
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
-
-    
-      <header class="post-header">
-
         
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/29/64位系统目录重定向/" itemprop="url">
-                  64位系统目录重定向
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-29T10:37:43+08:00" content="2016-10-29">
-              2016-10-29
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/problems/" itemprop="url" rel="index">
-                    <span itemprop="name">problems</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/10/29/64位系统目录重定向/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/29/64位系统目录重定向/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-         
-
-          
-          
-             <span id="/2016/10/29/64位系统目录重定向/" class="leancloud_visitors" data-flag-title="64位系统目录重定向">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechat.jpg" alt="gksker WeChat Pay"/>
+          <p>微信打赏</p>
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
       
       
-
-      
-        
-          <p>　　前段日子写代码时候遇到一个问题，在操作system32目录下的文件时候会返回错误：找不到文件的路径。当时一直没找到解决办法，最近在某个群里突然说到这个问题，有群里的朋友提出了些解决办法，虽然没有解决这个问题，但是通过这个问题，同事深入研究了下，最终解决了这个问题。我也从同事那了解到这个问题的解决办法。菜鸡的尴尬- -#<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/10/29/64位系统目录重定向/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/27/imap登录邮箱与Oauth2.0认证/" itemprop="url">
-                  imap登录邮箱与Oauth2.0认证
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-27T16:40:04+08:00" content="2016-10-27">
-              2016-10-27
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/10/27/imap登录邮箱与Oauth2.0认证/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/27/imap登录邮箱与Oauth2.0认证/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-         
-
-          
-          
-             <span id="/2016/10/27/imap登录邮箱与Oauth2.0认证/" class="leancloud_visitors" data-flag-title="imap登录邮箱与Oauth2.0认证">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="gksker Alipay"/>
+          <p>支付宝打赏</p>
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="0x1-what’s-IMAP"><a href="#0x1-what’s-IMAP" class="headerlink" title="0x1 what’s IMAP?"></a>0x1 what’s IMAP?</h3><p>　　IMAP（Internet Mail Access Protocol，Internet邮件访问协议）以前称作交互邮件访问协议（Interactive Mail Access Protocol）。IMAP是斯坦福大学在1986年开发的一种邮件获取协议。它的主要作用是邮件客户端（例如MS Outlook Express)可以通过这种协议从邮件服务器上获取邮件的信息，下载邮件等。当前的权威定义是RFC3501。IMAP协议运行在TCP/IP协议之上，使用的端口是143。它与POP3协议的主要区别是用户可以不用把所有的邮件全部下载，可以通过客户端直接对服务器上的邮件进行操作。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/10/27/imap登录邮箱与Oauth2.0认证/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
       
     </div>
+  </div>
 
-    <div>
-      
-    </div>
 
-    <div>
       
     </div>
 
@@ -623,19 +392,32 @@
       
 
       
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/29/64位系统目录重定向/" rel="next" title="64位系统目录重定向">
+                <i class="fa fa-chevron-left"></i> 64位系统目录重定向
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
 
       
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -643,6 +425,14 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/11/01/利用WMI监视进程启动实现轻量级hook/"
+           data-title="利用WMI监视进程启动实现轻量级hook" data-url="https://gksker.github.io/2016/11/01/利用WMI监视进程启动实现轻量级hook/">
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -662,8 +452,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.png"
@@ -724,6 +523,17 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x1-WMI简介"><span class="nav-number">1.</span> <span class="nav-text">0x1 WMI简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x2-VC中使用WMI的几个步骤"><span class="nav-number">2.</span> <span class="nav-text">0x2 VC中使用WMI的几个步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x3-其中的小问题"><span class="nav-number">3.</span> <span class="nav-text">0x3 其中的小问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x4-获取进程的父进程PID"><span class="nav-number">4.</span> <span class="nav-text">0x4 获取进程的父进程PID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
       
 
     </div>
@@ -820,6 +630,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
 
   
 
